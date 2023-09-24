@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Countdown Timer</title>
+    <style>
+        body {
+            background-color: black;
+            color: white;
+            font-family: Arial, sans-serif;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
+        }
+
+        .timer {
+            font-size: 15rem;
+        }
+
+        .fullscreen-button {
+            position: absolute;
+            top: 20px;
+            right: 20px;
+            cursor: pointer;
+        }
+
+        .fullscreen-button.hidden {
+            display: none;
+        }
+    </style>
+</head>
+<body>
+    <div class="timer">00:00</div>
+    <div class="fullscreen-button" onclick="toggleFullScreen()">
+        Full Screen
+    </div>
+
+    <script>
+        let isFullScreen = false;
+
+        function toggleFullScreen() {
+            const doc = window.document;
+            const docEl = doc.documentElement;
+
+            const requestFullScreen = docEl.requestFullscreen || docEl.mozRequestFullScreen || docEl.webkitRequestFullScreen || docEl.msRequestFullscreen;
+            const cancelFullScreen = doc.exitFullscreen || doc.mozCancelFullScreen || doc.webkitExitFullscreen || doc.msExitFullscreen;
+
+            if (!isFullScreen) {
+                requestFullScreen.call(docEl);
+            } else {
+                cancelFullScreen.call(doc);
+            }
+        }
+
+        function startCountdown(seconds) {
+            const timerElement = document.querySelector('.timer');
+            let remainingSeconds = seconds;
+
+            const countdownInterval = setInterval(() => {
+                const minutes = Math.floor(remainingSeconds / 60);
+                const seconds = remainingSeconds % 60;
+                timerElement.textContent = `${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')}`;
+
+                if (remainingSeconds === 0) {
+                    clearInterval(countdownInterval);
+                } else {
+                    remainingSeconds--;
+                }
+            }, 1000);
+        }
+
+        const initialCountdownTime = 14400;
+        startCountdown(initialCountdownTime);
+
+        document.addEventListener('fullscreenchange', () => {
+            isFullScreen = !isFullScreen;
+
+            const fullscreenButton = document.querySelector('.fullscreen-button');
+            fullscreenButton.classList.toggle('hidden');
+        });
+    </script>
+</body>
+</html>
